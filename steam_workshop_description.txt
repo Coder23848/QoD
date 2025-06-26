@@ -1,0 +1,26 @@
+A collection of various tweaks to make the game harder. Highly configurable.
+Incorporates all of the functionality of the following 1.9 mods:
+[list]
+    [*][url=https://steamcommunity.com/sharedfiles/filedetails/?id=3306115558]No Iterator Karma[/url]
+    [*][url=https://steamcommunity.com/sharedfiles/filedetails/?id=3167634165]Consistent Cycles[/url]
+    [*][url=https://steamcommunity.com/sharedfiles/filedetails/?id=3039693572]Less UI[/url]
+    [*][url=https://steamcommunity.com/sharedfiles/filedetails/?id=3039162852]No Map[/url]
+    [*][url=https://steamcommunity.com/sharedfiles/filedetails/?id=2954453947]Glow Nerf[/url]
+    [*][url=https://steamcommunity.com/sharedfiles/filedetails/?id=2944430260]Smarter Critters[/url]
+[/list]
+
+[h2] Features: [/h2]
+[list]
+    [*]Patient Lizards: White lizards become slightly better at hiding.
+    [*]Dropwig Pit Avoidance: Dropwigs avoid setting up ambushes over bottomless pits.
+    [*]Lizards Understand Slugcat Combat: Slightly improves lizards' slugcat-hunting strategy.
+    [*]No Karma From Iterators: Visiting Five Pebbles no longer raises your maximum karma level, forcing you to look for echoes to ascend.
+    [*]Cycle Consistency: Prevents the random aspects of a cycle (such as its length) from being rerandomized when you die. If you get a short cycle, you will have to accept it.
+    [*]Fixed Dynamic Difficulty: Does away with the game's (very subtle) dynamic difficulty mechanic, by locking the difficulty level to a configurable value.
+    [*]Remove Survivor/Monk Leniency Mechanics: Removes a few very subtle leniency mechanics that make the Survivor and the Monk easier than the other campaigns (food regrowing faster between deaths, shelter failures never occurring before Cycle 18).
+    [*]Precycles Always Flood: Flooding is always present during precycles.
+    [*]Light Nerfs: Reduce the strength of the neuron glow and/or lanterns. Both can be configured to fade over time as well.
+    [*]Remove Kill Feed: Remove the kill tracker added by the Remix mod on the hibernation screen. Does not affect the Hunter's campaign.
+    [*]Remove Token Tracker: Remove the arena token tracker added by the Remix mod on the hibernation screen.
+    [*]Remove Map: Removes the map. Good for people who like getting lost. If the Watcher DLC is enabled, [spoiler]there are additional options to remove their world map separately from the normal one, and to remove the colored ring indicators on said world map.[/spoiler]
+[/list]
