@@ -1,4 +1,4 @@
-A collection of various tweaks to make the game harder. Highly configurable.
+A collection of various gameplay tweaks, most of which make the game harder. All of them can be turned on or off in the mod's settings.
 Incorporates all of the functionality of the following 1.9 mods:
 [list]
     [*][url=https://steamcommunity.com/sharedfiles/filedetails/?id=3306115558]No Iterator Karma[/url]

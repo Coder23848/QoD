@@ -1,11 +1,12 @@
 {
 	"id": "qualityofdeath",
 	"name": "The Quality of Death Collection",
-	"version": "1.0.0",
+	"version": "1.0.1",
 	"hide_version": false,
 	"authors": "Coder23848",
 	"description": "A collection of tweaks to make the game harder.",
 	"requirements": [],
 	"requirements_names": [],
-	"checksum_override_version": false
+	"checksum_override_version": false,
+	"tags": [ "Game Mechanics", "Base", "Downpour", "Watcher" ]
 }
