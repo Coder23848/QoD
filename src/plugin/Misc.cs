@@ -19,7 +19,11 @@ namespace QoD
 
         private static void RainCycle_ctor(On.RainCycle.orig_ctor orig, RainCycle self, World world, float minutes)
         {
-            if (PluginOptions.AlwaysFloodPrecycles.Value && world.region.regionParams.earlyCycleFloodChance > 0f)
+            if (PluginOptions.AlwaysFloodPrecycles.Value && 
+                world != null && 
+                world.region != null && 
+                world.region.regionParams != null && 
+                world.region.regionParams.earlyCycleFloodChance > 0f)
             {
                 float temp = world.region.regionParams.earlyCycleFloodChance;
                 world.region.regionParams.earlyCycleFloodChance = 2f; // 2 instead of 1 since UnityEngine.Random.value is inclusive
