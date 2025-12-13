@@ -22,5 +22,7 @@ Incorporates all of the functionality of the following 1.9 mods:
     [*]Light Nerfs: Reduce the strength of the neuron glow and/or lanterns. Both can be configured to fade over time as well.
     [*]Remove Kill Feed: Remove the kill tracker added by the Remix mod on the hibernation screen. Does not affect the Hunter's campaign.
     [*]Remove Token Tracker: Remove the arena token tracker added by the Remix mod on the hibernation screen.
-    [*]Remove Map: Removes the map. Good for people who like getting lost. If the Watcher DLC is enabled, [spoiler]there are additional options to remove their world map separately from the normal one, and to remove the colored ring indicators on said world map.[/spoiler]
+    [*]Remove Map: Removes the map. Good for people who like getting lost. If the Watcher DLC is enabled, [spoiler]there are additional options to remove most of the markers on their world map as well.[/spoiler]
 [/list]
+
+Now supports v1.11.4. Please report any bugs you find!

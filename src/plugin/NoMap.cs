@@ -17,21 +17,85 @@ namespace QoD
             On.RWInput.PlayerInput_int += RWInput_PlayerInput_int;
             On.Menu.SleepAndDeathScreen.GetDataFromGame += SleepAndDeathScreen_GetDataFromGame;
             On.HUD.Map.MapData.InitWarpData += MapData_InitWarpData;
-            On.HUD.Map.WarpRegionIcon.ctor += WarpRegionIcon_ctor;
+            On.Watcher.WarpMap.WarpRegionIcon.ctor += WarpRegionIcon_ctor;
+            On.Watcher.WarpMap.LoadWarpConnections += WarpMap_LoadWarpConnections;
+            On.HUD.Map.WarpMarker.Draw += WarpMarker_Draw;
+            On.Watcher.WarpMap.TryGoToRegionMap += WarpMap_TryGoToRegionMap;
+
             _ = new Hook(typeof(Menu.SleepAndDeathScreen).GetMethod("get_RevealMap"), SleepAndDeathScreen_get_RevealMap);
             _ = new Hook(typeof(Menu.SleepAndDeathScreen).GetMethod("get_UsesWarpMap"), SleepAndDeathScreen_get_UsesWarpMap);
 
             IL.HUD.ExpeditionHUD.Update += ExpeditionHUD_Update;
-            IL.HUD.Map.Update += Map_UpdateIL;
             IL.Menu.SleepAndDeathScreen.UpdateMapInstructions += SleepAndDeathScreen_UpdateMapInstructions;
             IL.Menu.FastTravelScreen.UpdateButtonInstructions += FastTravelScreen_UpdateButtonInstructions;
         }
 
-        private static void WarpRegionIcon_ctor(On.HUD.Map.WarpRegionIcon.orig_ctor orig, HUD.Map.WarpRegionIcon self, HUD.Map map, UnityEngine.Vector3 percentPos, string region, bool infected, bool hasVoidWeaver, bool hasSpinningTopEncounter, bool visited)
+        // prevent entering the normal map from the warp map if the normal map is disabled and the warp map isn't
+        private static bool WarpMap_TryGoToRegionMap(On.Watcher.WarpMap.orig_TryGoToRegionMap orig, Watcher.WarpMap self, string region)
+        {
+            return PluginOptions.NoMap.Value ? false : orig(self, region);
+        }
+
+        // remove warp point indicators
+        private static void WarpMarker_Draw(On.HUD.Map.WarpMarker.orig_Draw orig, HUD.Map.WarpMarker self, float timeStacker)
+        {
+            orig(self, timeStacker);
+
+            if (PluginOptions.NoWatcherConnections.Value || PluginOptions.NoWatcherWarps.Value)
+            {
+                self.circle.visible = false;
+                self.circle.fade = 0f;
+                self.circle.lastFade = 0f;
+                self.circle.sprite.isVisible = false;
+                if (self.regionIcon != null)
+                {
+                    self.regionIcon.isVisible = false;
+                }
+                if (self.dotA != null)
+                {
+                    self.dotA.isVisible = false;
+                }
+                if (self.dotB != null)
+                {
+                    self.dotB.isVisible = false;
+                }
+                if (self.lineSprite != null)
+                {
+                    self.lineSprite.isVisible = false;
+                }
+            }
+            if (PluginOptions.NoWatcherWarps.Value)
+            {
+                self.symbolSprite.isVisible = false;
+                self.bkgFade.isVisible = false;
+            }
+        }
+
+        // remove connections from the Watcher's region map
+        private static void WarpMap_LoadWarpConnections(On.Watcher.WarpMap.orig_LoadWarpConnections orig, Watcher.WarpMap self)
+        {
+            if (PluginOptions.NoWatcherConnections.Value)
+            {
+                List<string> normalConnections = self.mapData.allWarpConnections;
+                self.mapData.allWarpConnections = new();
+
+                orig(self);
+
+                self.mapData.allWarpConnections = normalConnections;
+            }
+            else
+            {
+                orig(self);
+            }
+        }
+
+        // remove region indicators from the Watcher's region map
+        private static void WarpRegionIcon_ctor(On.Watcher.WarpMap.WarpRegionIcon.orig_ctor orig, Watcher.WarpMap.WarpRegionIcon self, Watcher.WarpMap map, int index, string region, bool infected, bool hasVoidWeaver, bool hasSpinningTopEncounter, bool visited)
         {
             bool new_hasSpinningTopEncounter = hasSpinningTopEncounter && !PluginOptions.NoWatcherGoldRings.Value;
+            bool new_hasVoidWeaver = hasVoidWeaver && !PluginOptions.NoWatcherFeathers.Value;
             bool new_infected = infected && !PluginOptions.NoWatcherPurpleRings.Value;
-            orig(self, map, percentPos, region, new_infected, hasVoidWeaver, new_hasSpinningTopEncounter, visited);
+            orig(self, map, index, region, new_infected, new_hasVoidWeaver, new_hasSpinningTopEncounter, visited);
         }
 
         static bool suppressInitWarpData = false;
@@ -46,7 +110,7 @@ namespace QoD
         // Prevent the warp map mode from activating on the sleep/death screen.
         private static void SleepAndDeathScreen_GetDataFromGame(On.Menu.SleepAndDeathScreen.orig_GetDataFromGame orig, Menu.SleepAndDeathScreen self, Menu.KarmaLadderScreen.SleepDeathScreenDataPackage package)
         {
-            if (PluginOptions.NoWatcherMap.Value)
+            if (false/*PluginOptions.NoWatcherMap.Value*/)
             {
                 suppressInitWarpData = true;
                 orig(self, package);
@@ -72,7 +136,7 @@ namespace QoD
         // Suppress the map button entirely while on the region/Passage screen.
         private static void FastTravelScreen_Update(On.Menu.FastTravelScreen.orig_Update orig, Menu.FastTravelScreen self)
         {
-            if (self.WarpPointModeActive ? PluginOptions.NoWatcherMap.Value : PluginOptions.NoMap.Value)
+            if (self.WarpPointModeActive ? false/*PluginOptions.NoWatcherMap.Value*/ : PluginOptions.NoMap.Value)
             {
                 suppressMapButton = true;
                 orig(self);
@@ -101,7 +165,7 @@ namespace QoD
         private static void FastTravelScreen_ctor(On.Menu.FastTravelScreen.orig_ctor orig, Menu.FastTravelScreen self, ProcessManager manager, ProcessManager.ProcessID ID)
         {
             orig(self, manager, ID);
-            if (self.WarpPointModeActive ? PluginOptions.NoWatcherMap.Value : PluginOptions.NoMap.Value)
+            if (self.WarpPointModeActive ? false/*PluginOptions.NoWatcherMap.Value*/ : PluginOptions.NoMap.Value)
             {
                 self.mapButtonPrompt.text = "";
                 self.mapButtonPrompt.label.Redraw(false, false);
@@ -113,7 +177,7 @@ namespace QoD
         {
             if (PluginOptions.NoMap.Value)
             {
-                if (PluginOptions.NoWatcherMap.Value)
+                if (false/*PluginOptions.NoWatcherMap.Value*/)
                 {
                     return false;
                 }
@@ -124,7 +188,7 @@ namespace QoD
             }
             else
             {
-                if (PluginOptions.NoWatcherMap.Value)
+                if (false/*PluginOptions.NoWatcherMap.Value*/)
                 {
                     if (self.saveState == null)
                     {
@@ -148,7 +212,7 @@ namespace QoD
 
         private static bool SleepAndDeathScreen_get_UsesWarpMap(Func<Menu.SleepAndDeathScreen, bool> orig, Menu.SleepAndDeathScreen self)
         {
-            return PluginOptions.NoWatcherMap.Value ? false : orig(self);
+            return false/*PluginOptions.NoWatcherMap.Value*/ ? false : orig(self);
         }
 
         // Change the criteria for displaying the expedition challenge list to not be dependent on the map being visible.
@@ -170,26 +234,6 @@ namespace QoD
             else
             {
                 Plugin.PluginLogger.LogError("Failed to hook ExpeditionHUD.Update: no match found.");
-            }
-        }
-
-        // Prevent going from the warp map to the regular one, if warp map is enabled and regular map is not.
-        private static void Map_UpdateIL(ILContext il)
-        {
-            ILCursor cursor = new(il);
-            if (cursor.TryGotoNext(MoveType.After,
-                x => x.MatchLdfld<Player.InputPackage>(nameof(Player.InputPackage.jmp))))
-            {
-                static bool Map_UpdateDelegate(bool orig) // Apparently declaring the delegate beforehand is very slightly faster.
-                {
-                    return orig && !PluginOptions.NoMap.Value;
-                }
-                ;
-                cursor.EmitDelegate(Map_UpdateDelegate);
-            }
-            else
-            {
-                Plugin.PluginLogger.LogError("Failed to hook Map.Update: no match found.");
             }
         }
 

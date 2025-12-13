@@ -340,6 +340,7 @@ namespace QoD
                 Plugin.PluginLogger.LogError("Failed to hook HologramLight.Needed: no match found.");
             }
         }
+        // make spiders not count dead lanterns as light
         private static void BigSpiderAI_IUseARelationshipTracker_UpdateDynamicRelationship(ILContext il)
         {
             ILCursor cursor = new(il);
@@ -476,9 +477,9 @@ namespace QoD
             }
         }
         // The Void Sea sets the player's light source every frame, as it slowly fades it out as you get deeper in.
-        private static void VoidSeaScene_VoidSeaTreatment(On.VoidSea.VoidSeaScene.orig_VoidSeaTreatment orig, VoidSea.VoidSeaScene self, Player player, float swimSpeed)
+        private static void VoidSeaScene_VoidSeaTreatment(On.VoidSea.VoidSeaScene.orig_VoidSeaTreatment orig, VoidSea.VoidSeaScene self, Player player, float swimSpeed, bool mainVoidSeaPlayer, bool isGhost)
         {
-            orig(self, player, swimSpeed);
+            orig(self, player, swimSpeed, mainVoidSeaPlayer, isGhost);
             if (PluginOptions.GlowNerfOn.Value && player.graphicsModule != null && (player.graphicsModule as PlayerGraphics).lightSource != null)
             {
                 (player.graphicsModule as PlayerGraphics).lightSource.setAlpha *= GlowMultiplier(player);

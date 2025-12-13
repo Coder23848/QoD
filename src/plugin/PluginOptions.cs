@@ -20,9 +20,12 @@ namespace QoD
 
         // NoMap
         public static Configurable<bool> NoMap = Instance.config.Bind("NoMap", false, new ConfigurableInfo("Removes the map."));
-        public static Configurable<bool> NoWatcherMap = Instance.config.Bind("NoWatcherMap", false, new ConfigurableInfo("Removes the Watcher's region map."));
+        //public static Configurable<bool> NoWatcherMap = Instance.config.Bind("NoWatcherMap", false, new ConfigurableInfo("Removes the Watcher's region map."));
         public static Configurable<bool> NoWatcherGoldRings = Instance.config.Bind("NoWatcherGoldRings", false, new ConfigurableInfo("Removes the golden rings on the Watcher's region map."));
         public static Configurable<bool> NoWatcherPurpleRings = Instance.config.Bind("NoWatcherPurpleRings", false, new ConfigurableInfo("Removes the purple rings on the Watcher's region map."));
+        public static Configurable<bool> NoWatcherFeathers = Instance.config.Bind("NoWatcherFeathers", false, new ConfigurableInfo("Removes the feathers on the Watcher's region map."));
+        public static Configurable<bool> NoWatcherConnections = Instance.config.Bind("NoWatcherConnections", false, new ConfigurableInfo("Removes the region connections on the Watcher's region map."));
+        public static Configurable<bool> NoWatcherWarps = Instance.config.Bind("NoWatcherWarps", false, new ConfigurableInfo("Removes the warp points on the Watcher's map."));
 
         // SmarterCritters
         public static Configurable<bool> LizardPatience = Instance.config.Bind("LizardPatience", false, new ConfigurableInfo("When enabled, lizards that rely on stealth are more patient."));
@@ -169,9 +172,12 @@ namespace QoD
 
             if (ModManager.Watcher)
             {
-                CheckBoxOption(UIRemovalTab, NoWatcherMap, 3, "Remove The Watcher's Region Map");
-                CheckBoxOption(UIRemovalTab, NoWatcherGoldRings, 4, "Remove The Watcher's Gold Ring Indicators");
-                CheckBoxOption(UIRemovalTab, NoWatcherPurpleRings, 5, "Remove The Watcher's Purple Ring Indicators");
+                //CheckBoxOption(UIRemovalTab, NoWatcherMap, 3, "Remove The Watcher's Region Map");
+                CheckBoxOption(UIRemovalTab, NoWatcherGoldRings, 3, "Remove The Watcher's Gold Ring Indicators");
+                CheckBoxOption(UIRemovalTab, NoWatcherPurpleRings, 4, "Remove The Watcher's Purple Ring Indicators");
+                CheckBoxOption(UIRemovalTab, NoWatcherFeathers, 5, "Remove The Watcher's Gold Feather Indicators");
+                CheckBoxOption(UIRemovalTab, NoWatcherConnections, 6, "Remove The Watcher's Connection Indicators");
+                CheckBoxOption(UIRemovalTab, NoWatcherWarps, 7, "Remove The Watcher's Warp Point Indicators");
             }
 
             Tabs[2] = UIRemovalTab;
