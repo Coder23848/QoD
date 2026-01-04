@@ -19,7 +19,90 @@ namespace QoD
             On.Watcher.Barnacle.Collide += Barnacle_Collide;
             On.Watcher.BarnacleAI.SetGroupDiscomfortTick += BarnacleAI_SetGroupDiscomfortTick;
             IL.Watcher.Barnacle.Act += Barnacle_Act;
+
+            //IL.Player.ThrowObject += Player_ThrowObject;
+
+            On.Room.InGameNoise += Room_InGameNoise;
+
+            On.MoreSlugcats.GooieDuck.BitByPlayer += GooieDuck_BitByPlayer;
+            IL.Player.GrabUpdate += Player_GrabUpdate;
         }
+
+        private static void Player_GrabUpdate(ILContext il)
+        {
+            ILCursor cursor = new(il);
+
+            // add InGameNoise to the Spearmaster's spear pull
+            if (cursor.TryGotoNext(MoveType.After,
+                x => x.MatchLdsfld<MoreSlugcats.MoreSlugcatsEnums.MSCSoundID>(nameof(MoreSlugcats.MoreSlugcatsEnums.MSCSoundID.SM_Spear_Grab)))
+                &&
+                cursor.TryGotoNext(MoveType.After,
+                x => x.MatchCallvirt<Room>(nameof(Room.PlaySound))))
+            {
+                static void Delegate(Player self)
+                {
+                    if (PluginOptions.AudibleSpearmaster.Value)
+                    {
+                        self.room.InGameNoise(new(self.mainBodyChunk.pos, 900f, self, 1f));
+                    }
+                }
+                cursor.Emit(OpCodes.Ldarg_0);
+                cursor.EmitDelegate(Delegate);
+            }
+            else
+            {
+                Plugin.PluginLogger.LogError("Failed to hook Player.GrabUpdate: no match found.");
+                return;
+            }
+        }
+
+        // add InGameNoise to gooieduck pop
+        private static void GooieDuck_BitByPlayer(On.MoreSlugcats.GooieDuck.orig_BitByPlayer orig, MoreSlugcats.GooieDuck self, Creature.Grasp grasp, bool eu)
+        {
+            if (self.bites == 6 && PluginOptions.AudibleGooieducks.Value)
+            {
+                self.room.InGameNoise(new(self.firstChunk.pos, 2000f, self, 4f));
+            }
+            orig(self, grasp, eu);
+        }
+
+        // InGameNoise debugging
+        private static void Room_InGameNoise(On.Room.orig_InGameNoise orig, Room self, Noise.InGameNoise noise)
+        {
+            orig(self, noise);
+            UnityEngine.Debug.Log("NOISE pos: " + noise.pos + ", strength: " + noise.strength + ", source object: " + noise.sourceObject + ", interesting: " + noise.interesting);
+        }
+
+        // Work-in-progress hook for physics-accurate throwboosting. It probably will not be finished, since it turned out to not be all that fun.
+        //private static void Player_ThrowObject(ILContext il)
+        //{
+        //    ILCursor cursor = new(il);
+
+        //    static float Delegate(float orig)
+        //    {
+        //        return -orig;
+        //    }
+
+        //    // There are four constant values that need to be modified (two body chunks, and MMF Stronger Climbing Grip makes them use different ones), each used in an identical section of code.
+        //    float[] vals = [2, 8, 8, 4];
+
+        //    for (int i = 0; i < vals.Length; i++)
+        //    {
+        //        if (cursor.TryGotoNext(MoveType.After,
+        //        x => x.MatchLdfld<BodyChunk>(nameof(BodyChunk.vel)),
+        //        x => x.MatchLdloca(0),
+        //        x => x.MatchCall<RWCustom.IntVector2>(nameof(RWCustom.IntVector2.ToVector2)),
+        //        x => x.MatchLdcR4(vals[i])))
+        //        {
+        //            cursor.EmitDelegate(Delegate);
+        //        }
+        //        else
+        //        {
+        //            Plugin.PluginLogger.LogError("Failed to hook Player.ThrowObject: no match found.");
+        //            return;
+        //        }
+        //    }
+        //}
 
         private static void Barnacle_Act(ILContext il)
         {
@@ -72,7 +155,7 @@ namespace QoD
                 static float Delegate4(float val, Creature realizedCreature)
                 {
                     float ret = PluginOptions.StrongerBarnacles.Value && !(realizedCreature is Lizard liz && ModManager.Watcher && liz.Template.type == Watcher.WatcherEnums.CreatureTemplateType.PeachLizard) ? val / 3f : val;
-                    UnityEngine.Debug.Log(ret);
+                    //UnityEngine.Debug.Log(ret);
                     return ret;
                 }
                 cursor.Emit(OpCodes.Ldloc_2);
@@ -100,14 +183,14 @@ namespace QoD
             {
                 bool flag = self.shakeCooldown <= 0;
 
-                Watcher.BarnacleAI.Behavior realBehavior = self.AI.behavior;
-                self.AI.behavior = Watcher.BarnacleAI.Behavior.Idle;
+                //Watcher.BarnacleAI.Behavior realBehavior = self.AI.behavior;
+                //self.AI.behavior = Watcher.BarnacleAI.Behavior.Idle;
 
                 doBarnacleDiscomfort = false;
                 orig(self, otherObject, myChunk, otherChunk);
                 doBarnacleDiscomfort = true;
 
-                self.AI.behavior = realBehavior;
+                //self.AI.behavior = realBehavior;
 
                 if (flag && self.shakeCooldown > 0 && !(otherObject is Lizard liz && ModManager.Watcher && liz.Template.type == Watcher.WatcherEnums.CreatureTemplateType.PeachLizard))
                 {

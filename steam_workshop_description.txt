@@ -19,6 +19,8 @@ Incorporates all of the functionality of the following 1.9 mods:
     [*]Fixed Dynamic Difficulty: Does away with the game's (very subtle) dynamic difficulty mechanic, by locking the difficulty level to a configurable value.
     [*]Remove Survivor/Monk Leniency Mechanics: Removes a few very subtle leniency mechanics that make the Survivor and the Monk easier than the other campaigns (food regrowing faster between deaths, shelter failures never occurring before Cycle 18).
     [*]Precycles Always Flood: Flooding is always present during precycles.
+    [*]Audible Gooieducks: Allows other creatures to hear gooieducks' popping sounds.
+    [*]Audible Spearmaster Spears: Allows other creatures to hear the Spearmaster's spear-picking sounds.
     [*]Stronger Barnacles: Makes Barnacles much harder to deal with.
     [*]Light Nerfs: Reduce the strength of the neuron glow and/or lanterns. Both can be configured to fade over time as well.
     [*]Remove Kill Feed: Remove the kill tracker added by the Remix mod on the hibernation screen. Does not affect the Hunter's campaign.
