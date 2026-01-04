@@ -22,7 +22,7 @@ namespace QoD
 
             //IL.Player.ThrowObject += Player_ThrowObject;
 
-            On.Room.InGameNoise += Room_InGameNoise;
+            //On.Room.InGameNoise += Room_InGameNoise;
 
             On.MoreSlugcats.GooieDuck.BitByPlayer += GooieDuck_BitByPlayer;
             IL.Player.GrabUpdate += Player_GrabUpdate;
