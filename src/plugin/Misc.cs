@@ -25,14 +25,108 @@ namespace QoD
             //On.Room.InGameNoise += Room_InGameNoise;
 
             On.MoreSlugcats.GooieDuck.BitByPlayer += GooieDuck_BitByPlayer;
+            IL.SeedCob.Update += SeedCob_Update;
+            On.WaterNut.Swell += WaterNut_Swell;
+
             IL.Player.GrabUpdate += Player_GrabUpdate;
+
+            //IL.Spear.HitSomething += Spear_HitSomething;
+            //IL.MoreSlugcats.LillyPuck.HitSomething += LillyPuck_HitSomething;
+            //IL.Weapon.HitAnotherThrownWeapon += Weapon_HitAnotherThrownWeapon;
         }
 
+        // adds InGameNoise to all spear BOUNCES
+        // incomplete, may not be finished due to the fact that most spear-related interactions will produce sound for other reasons anyways
+
+        //private static void Weapon_HitAnotherThrownWeapon(ILContext il)
+        //{
+        //    ILCursor cursor = new(il);
+
+        //    // add InGameNoise to parries
+        //    if (cursor.TryGotoNext(MoveType.After,
+        //        x => x.MatchLdsfld<SoundID>(nameof(SoundID.Spear_Bounce_Off_Creauture_Shell)))
+        //        &&
+        //        cursor.TryGotoNext(MoveType.After,
+        //        x => x.MatchCallvirt<Room>(nameof(Room.PlaySound))))
+        //    {
+        //        static void Delegate(Weapon self)
+        //        {
+        //            if (true)
+        //            {
+        //                self.room.InGameNoise(new(self.firstChunk.pos, 900f, self, 1f));
+        //            }
+        //        }
+        //        cursor.Emit(OpCodes.Ldarg_0);
+        //        cursor.EmitDelegate(Delegate);
+        //    }
+        //    else
+        //    {
+        //        Plugin.PluginLogger.LogError("Failed to hook " + il.Method.Name + ": no match found.");
+        //        return;
+        //    }
+        //}
+
+        //private static void LillyPuck_HitSomething(ILContext il)
+        //{
+        //    ILCursor cursor = new(il);
+
+        //    // add InGameNoise to lillypuck hits
+        //    if (cursor.TryGotoNext(MoveType.After,
+        //        x => x.MatchLdsfld<SoundID>(nameof(SoundID.Spear_Bounce_Off_Creauture_Shell)))
+        //        &&
+        //        cursor.TryGotoNext(MoveType.After,
+        //        x => x.MatchCallvirt<Room>(nameof(Room.PlaySound))))
+        //    {
+        //        static void Delegate(MoreSlugcats.LillyPuck self)
+        //        {
+        //            if (true)
+        //            {
+        //                self.room.InGameNoise(new(self.firstChunk.pos, 900f, self, 1f));
+        //            }
+        //        }
+        //        cursor.Emit(OpCodes.Ldarg_0);
+        //        cursor.EmitDelegate(Delegate);
+        //    }
+        //    else
+        //    {
+        //        Plugin.PluginLogger.LogError("Failed to hook " + il.Method.Name + ": no match found.");
+        //        return;
+        //    }
+        //}
+
+        //private static void Spear_HitSomething(ILContext il)
+        //{
+        //    ILCursor cursor = new(il);
+
+        //    // add InGameNoise to spear hits
+        //    if (cursor.TryGotoNext(MoveType.After,
+        //        x => x.MatchLdsfld<SoundID>(nameof(SoundID.Spear_Bounce_Off_Creauture_Shell)))
+        //        &&
+        //        cursor.TryGotoNext(MoveType.After,
+        //        x => x.MatchCallvirt<Room>(nameof(Room.PlaySound))))
+        //    {
+        //        static void Delegate(Spear self)
+        //        {
+        //            if (true)
+        //            {
+        //                self.room.InGameNoise(new(self.firstChunk.pos, 900f, self, 1f));
+        //            }
+        //        }
+        //        cursor.Emit(OpCodes.Ldarg_0);
+        //        cursor.EmitDelegate(Delegate);
+        //    }
+        //    else
+        //    {
+        //        Plugin.PluginLogger.LogError("Failed to hook " + il.Method.Name + ": no match found.");
+        //        return;
+        //    }
+        //}
+
+        // add InGameNoise to the Spearmaster's spear pull
         private static void Player_GrabUpdate(ILContext il)
         {
             ILCursor cursor = new(il);
 
-            // add InGameNoise to the Spearmaster's spear pull
             if (cursor.TryGotoNext(MoveType.After,
                 x => x.MatchLdsfld<MoreSlugcats.MoreSlugcatsEnums.MSCSoundID>(nameof(MoreSlugcats.MoreSlugcatsEnums.MSCSoundID.SM_Spear_Grab)))
                 &&
@@ -43,7 +137,7 @@ namespace QoD
                 {
                     if (PluginOptions.AudibleSpearmaster.Value)
                     {
-                        self.room.InGameNoise(new(self.mainBodyChunk.pos, 900f, self, 1f));
+                        self.room.InGameNoise(new(self.mainBodyChunk.pos, 400f, self, 1f));
                     }
                 }
                 cursor.Emit(OpCodes.Ldarg_0);
@@ -51,7 +145,46 @@ namespace QoD
             }
             else
             {
-                Plugin.PluginLogger.LogError("Failed to hook Player.GrabUpdate: no match found.");
+                Plugin.PluginLogger.LogError("Failed to hook " + il.Method.Name + ": no match found.");
+                return;
+            }
+        }
+
+        // add InGame Noise to waternut pop
+        private static void WaterNut_Swell(On.WaterNut.orig_Swell orig, WaterNut self)
+        {
+            if (PluginOptions.AudibleFoodPopping.Value)
+            {
+                self.room.InGameNoise(new(self.firstChunk.pos, 600f, self, 1f));
+            }
+            orig(self);
+        }
+
+        // add InGameNoise to seedcob pops
+        private static void SeedCob_Update(ILContext il)
+        {
+            ILCursor cursor = new(il);
+
+            if (cursor.TryGotoNext(MoveType.After,
+                x => x.MatchLdsfld<SoundID>(nameof(SoundID.Seed_Cob_Pop)))
+                &&
+                cursor.TryGotoNext(MoveType.After,
+                x => x.MatchCallvirt<Room>(nameof(Room.PlaySound))))
+            {
+                static void Delegate(SeedCob self, UnityEngine.Vector2 pos)
+                {
+                    if (PluginOptions.AudibleFoodPopping.Value)
+                    {
+                        self.room.InGameNoise(new(pos, 400f, self, 1f / 3f)); // Seedcobs have about 32 seeds on average, so this creates a LOT of noise. This can be balanced by making the noise less interesting, but if the interest factor is set too low creatures just stop reacting to it entirely. This seems like a reasonable middle ground?
+                    }
+                }
+                cursor.Emit(OpCodes.Ldarg_0);
+                cursor.Emit(OpCodes.Ldloc, 7);
+                cursor.EmitDelegate(Delegate);
+            }
+            else
+            {
+                Plugin.PluginLogger.LogError("Failed to hook " + il.Method.Name + ": no match found.");
                 return;
             }
         }
@@ -59,7 +192,7 @@ namespace QoD
         // add InGameNoise to gooieduck pop
         private static void GooieDuck_BitByPlayer(On.MoreSlugcats.GooieDuck.orig_BitByPlayer orig, MoreSlugcats.GooieDuck self, Creature.Grasp grasp, bool eu)
         {
-            if (self.bites == 6 && PluginOptions.AudibleGooieducks.Value)
+            if (self.bites == 6 && PluginOptions.AudibleFoodPopping.Value)
             {
                 self.room.InGameNoise(new(self.firstChunk.pos, 2000f, self, 4f));
             }
@@ -98,7 +231,7 @@ namespace QoD
         //        }
         //        else
         //        {
-        //            Plugin.PluginLogger.LogError("Failed to hook Player.ThrowObject: no match found.");
+        //            Plugin.PluginLogger.LogError("Failed to hook " + il.Method.Name + ": no match found.");
         //            return;
         //        }
         //    }
@@ -122,7 +255,7 @@ namespace QoD
             }
             else
             {
-                Plugin.PluginLogger.LogError("Failed to hook Watcher.Barnacle.Act: no match found.");
+                Plugin.PluginLogger.LogError("Failed to hook " + il.Method.Name + ": no match found.");
                 return;
             }
 
@@ -142,7 +275,7 @@ namespace QoD
             }
             else
             {
-                Plugin.PluginLogger.LogError("Failed to hook Watcher.Barnacle.Act: no match found.");
+                Plugin.PluginLogger.LogError("Failed to hook " + il.Method.Name + ": no match found.");
                 return;
             }
 
@@ -163,7 +296,7 @@ namespace QoD
             }
             else
             {
-                Plugin.PluginLogger.LogError("Failed to hook Watcher.Barnacle.Act: no match found.");
+                Plugin.PluginLogger.LogError("Failed to hook " + il.Method.Name + ": no match found.");
                 return;
             }
         }
@@ -278,12 +411,12 @@ namespace QoD
                 }
                 else
                 {
-                    Plugin.PluginLogger.LogError("Failed to hook Scavenger.WantToLethallyAttack: no match found.");
+                    Plugin.PluginLogger.LogError("Failed to hook " + il.Method.Name + ": no match found.");
                 }
             }
             else
             {
-                Plugin.PluginLogger.LogError("Failed to hook Scavenger.WantToLethallyAttack: no match found.");
+                Plugin.PluginLogger.LogError("Failed to hook " + il.Method.Name + ": no match found.");
             }
         }
         // remove monk/survivor shelter failure leniency
@@ -314,12 +447,12 @@ namespace QoD
                 }
                 else
                 {
-                    Plugin.PluginLogger.LogError("Failed to hook RainCycle.ctor: no match found.");
+                    Plugin.PluginLogger.LogError("Failed to hook " + il.Method.Name + ": no match found.");
                 }
             }
             else
             {
-                Plugin.PluginLogger.LogError("Failed to hook RainCycle.ctor: no match found.");
+                Plugin.PluginLogger.LogError("Failed to hook " + il.Method.Name + ": no match found.");
             }
         }
         // no bonus food respawning for monk/survivor
@@ -358,12 +491,12 @@ namespace QoD
                 }
                 else
                 {
-                    Plugin.PluginLogger.LogError("Failed to hook SaveState.SessionEnded: no match found.");
+                    Plugin.PluginLogger.LogError("Failed to hook " + il.Method.Name + ": no match found.");
                 }
             }
             else
             {
-                Plugin.PluginLogger.LogError("Failed to hook SaveState.SessionEnded: no match found.");
+                Plugin.PluginLogger.LogError("Failed to hook " + il.Method.Name + ": no match found.");
             }
         }
     }

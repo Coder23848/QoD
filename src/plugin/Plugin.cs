@@ -1,5 +1,4 @@
 ﻿using BepInEx;
-using MoreSlugcats;
 using UnityEngine;
 
 namespace QoD
@@ -15,6 +14,7 @@ namespace QoD
         {
             // Plugin startup logic
             On.RainWorld.OnModsInit += RainWorld_OnModsInit;
+            PluginLogger = Logger;
 
             LessUI.RegisterHooks();
             SmarterCritters.RegisterHooks();
@@ -23,8 +23,6 @@ namespace QoD
             ConsistentCycles.RegisterHooks();
             NoMap.RegisterHooks();
             Misc.RegisterHooks();
-
-            PluginLogger = Logger;
         }
 
         private void RainWorld_OnModsInit(On.RainWorld.orig_OnModsInit orig, RainWorld self)

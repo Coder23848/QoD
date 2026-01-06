@@ -14,7 +14,7 @@ namespace QoD
         public static Configurable<bool> NoSurvivorLeniency = Instance.config.Bind("NoSurvivorLeniency", false, new ConfigurableInfo("Removes certain subtle leniency mechanics exclusive to the Survivor's and Monk's campaigns."));
         public static Configurable<bool> AlwaysFloodPrecycles = Instance.config.Bind("AlwaysFloodPrecycles", false, new ConfigurableInfo("When enabled, pre-cycle rain will always cause flooding."));
         public static Configurable<bool> StrongerBarnacles = Instance.config.Bind("StrongerBarnacles", false, new ConfigurableInfo("Makes barnacles harder to deal with."));
-        public static Configurable<bool> AudibleGooieducks = Instance.config.Bind("AudibleGooieducks", false, new ConfigurableInfo("Allows other creatures to hear gooieducks' popping sounds."));
+        public static Configurable<bool> AudibleFoodPopping = Instance.config.Bind("AudibleGooieducks", false, new ConfigurableInfo("Allows other creatures to hear the sounds created when interacting with certain types of food."));
         public static Configurable<bool> AudibleSpearmaster = Instance.config.Bind("AudibleSpearmaster", false, new ConfigurableInfo("Allows other creatures to hear the Spearmaster's spear-picking sounds."));
 
         // LessUI
@@ -112,7 +112,7 @@ namespace QoD
             MiscTab.AddItems(new OpCheckBox(UseFixedDynamicDifficulty, new(50, 550 - 5 * 30)) { description = UseFixedDynamicDifficulty.info.description }, new OpFloatSlider(FixedDynamicDifficulty, new(90, 550 - 5 * 30 - 5), 100) { description = FixedDynamicDifficulty.info.description, min = -1f, max = 1f }, new OpLabel(new Vector2(110 + 100, 550 - 5 * 30), new Vector2(), "Fixed Dynamic Difficulty", FLabelAlignment.Left));
             CheckBoxOption(MiscTab, NoSurvivorLeniency, 6, "Remove Survivor/Monk Leniency Mechanics");
             CheckBoxOption(MiscTab, AlwaysFloodPrecycles, 7, "Precycles Always Flood");
-            CheckBoxOption(MiscTab, AudibleGooieducks, 8, "Audible Gooieducks");
+            CheckBoxOption(MiscTab, AudibleFoodPopping, 8, "Audible Food Popping");
             CheckBoxOption(MiscTab, AudibleSpearmaster, 9, "Audible Spearmaster Spears");
 
             if (ModManager.Watcher)
