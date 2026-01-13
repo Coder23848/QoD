@@ -21,6 +21,12 @@ namespace QoD
         public static Configurable<bool> RemoveKillFeed = Instance.config.Bind("RemoveKillFeed", false, new ConfigurableInfo("Removes the kill feed from the shelter screen."));
         public static Configurable<bool> RemoveTokenTracker = Instance.config.Bind("RemoveTokenTracker", false, new ConfigurableInfo("Removes the token tracker from the shelter screen."));
 
+        // Pipe Symbol Remapping
+        public static Configurable<bool> NormalizeGatePipes = Instance.config.Bind("NormalizeGatePipes", false, new ConfigurableInfo("When enabled, pipes leading to gates do not have a special icon."));
+        public static Configurable<bool> NormalizeShelterPipes = Instance.config.Bind("NormalizeShelterPipes", false, new ConfigurableInfo("When enabled, pipes leading to shelters do not have a special icon."));
+        public static Configurable<bool> NormalizeRoomExitPipes = Instance.config.Bind("NormalizeRoomExitPipes", false, new ConfigurableInfo("When enabled, pipes leading to other rooms do not have a special icon."));
+        public static Configurable<bool> HideAllPipes = Instance.config.Bind("HideAllPipes", false, new ConfigurableInfo("Removes pipe icons entirely, making all pipes hidden."));
+
         // NoMap
         public static Configurable<bool> NoMap = Instance.config.Bind("NoMap", false, new ConfigurableInfo("Removes the map."));
         //public static Configurable<bool> NoWatcherMap = Instance.config.Bind("NoWatcherMap", false, new ConfigurableInfo("Removes the Watcher's region map."));
@@ -91,6 +97,22 @@ namespace QoD
         private void LanternNerfOnCheckBox_OnValueUpdate(UIconfig config, string value, string oldValue)
         {
             UpdateLanternNerfUIelements(bool.Parse(value));
+        }
+
+        List<UIelement> PipeNormalizationUIElements = new();
+        private void UpdatePipeNormalizationUIElements(bool greyedOut)
+        {
+            foreach (UIelement i in PipeNormalizationUIElements)
+            {
+                if (i is OpCheckBox cb)
+                {
+                    cb.greyedOut = greyedOut;
+                }
+            }
+        }
+        private void HideAllPipesCheckbox_OnValueUpdate(UIconfig config, string value, string oldValue)
+        {
+            UpdatePipeNormalizationUIElements(bool.Parse(value));
         }
 
         public override void Initialize()
@@ -190,12 +212,26 @@ namespace QoD
                 CheckBoxOption(UIRemovalTab, NoWatcherWarps, 7, "Remove The Watcher's Warp Point Indicators");
             }
 
+            PipeNormalizationUIElements.Clear();
+            PipeNormalizationUIElements.AddRange(CheckBoxOption(UIRemovalTab, NormalizeGatePipes, 9, "Normalize Gate Pipes"));
+            PipeNormalizationUIElements.AddRange(CheckBoxOption(UIRemovalTab, NormalizeShelterPipes, 10, "Normalize Shelter Pipes"));
+            PipeNormalizationUIElements.AddRange(CheckBoxOption(UIRemovalTab, NormalizeRoomExitPipes, 11, "Normalize Room Exit Pipes"));
+            OpCheckBox HideAllPipesCheckbox = CheckBoxOption(UIRemovalTab, HideAllPipes, 12, "Hide All Pipes")[0] as OpCheckBox;
+            HideAllPipesCheckbox.OnValueUpdate += HideAllPipesCheckbox_OnValueUpdate;
+            UpdatePipeNormalizationUIElements(HideAllPipes.Value);
+
             Tabs[2] = UIRemovalTab;
         }
 
-        private void CheckBoxOption(OpTab tab, Configurable<bool> setting, float pos, string label)
+        private UIelement[] CheckBoxOption(OpTab tab, Configurable<bool> setting, float pos, string label)
         {
-            tab.AddItems(new OpCheckBox(setting, new(50, 550 - pos * 30)) { description = setting.info.description }, new OpLabel(new Vector2(90, 550 - pos * 30), new Vector2(), label, FLabelAlignment.Left));
+            UIelement[] ret =
+            [
+                new OpCheckBox(setting, new(50, 550 - pos * 30)) { description = setting.info.description },
+                new OpLabel(new Vector2(90, 550 - pos * 30), new Vector2(), label, FLabelAlignment.Left),
+            ];
+            tab.AddItems(ret);
+            return ret;
         }
         private void SliderOption(OpTab tab, Configurable<float> setting, int size, float pos, string label)
         {
