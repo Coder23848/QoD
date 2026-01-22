@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using BepInEx;
 using Mono.Cecil.Cil;
 using MonoMod.Cil;
 using MonoMod.RuntimeDetour;
@@ -12,9 +11,12 @@ namespace QoD
         public static void RegisterHooks()
         {
             On.HUD.Map.Update += Map_Update;
+            On.HUD.Map.Draw += Map_Draw;
+            On.HUD.Map.CycleLabel.Update += CycleLabel_Update;
             On.Menu.FastTravelScreen.ctor += FastTravelScreen_ctor;
             On.Menu.FastTravelScreen.Update += FastTravelScreen_Update;
             On.RWInput.PlayerInput_int += RWInput_PlayerInput_int;
+
             On.Menu.SleepAndDeathScreen.GetDataFromGame += SleepAndDeathScreen_GetDataFromGame;
             On.HUD.Map.MapData.InitWarpData += MapData_InitWarpData;
             On.Watcher.WarpMap.WarpRegionIcon.ctor += WarpRegionIcon_ctor;
@@ -234,6 +236,30 @@ namespace QoD
             else
             {
                 Plugin.PluginLogger.LogError("Failed to hook ExpeditionHUD.Update: no match found.");
+            }
+        }
+        // Change the criteria for displaying the Hunter's cycle counter to not be dependent on the map being visible.
+        private static void CycleLabel_Update(On.HUD.Map.CycleLabel.orig_Update orig, HUD.Map.CycleLabel self)
+        {
+            if (PluginOptions.NoMap.Value)
+            {
+                float realFade = self.owner.fade; // If the map update hook is working properly, this should always be zero anyways, but just in case...
+                self.owner.fade = self.owner.hud.owner.RevealMap ? 1f : 0f;
+                orig(self);
+                self.owner.fade = realFade;
+            }
+            else
+            {
+                orig(self);
+            }
+        }
+        // Under normal circumstances, the cycle label is never drawn if the map isn't visible, so it has to be called manually if No Map is active.
+        private static void Map_Draw(On.HUD.Map.orig_Draw orig, HUD.Map self, float timeStacker)
+        {
+            orig(self, timeStacker);
+            if (PluginOptions.NoMap.Value && !self.visible && self.cycleLabel != null)
+            {
+                self.cycleLabel.Draw(timeStacker, 1f);
             }
         }
 
