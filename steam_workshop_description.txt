@@ -14,6 +14,7 @@ Incorporates all of the functionality of the following 1.9 mods:
     [*]Patient Lizards: White lizards become slightly better at hiding.
     [*]Dropwig Pit Avoidance: Dropwigs avoid setting up ambushes over bottomless pits.
     [*]Lizards Understand Slugcat Combat: Slightly improves lizards' slugcat-hunting strategy.
+    [*]Better Batfly Rain Behavior: Makes batflies better at escaping the Rain.
     [*]No Karma From Iterators: Visiting Five Pebbles no longer raises your maximum karma level, forcing you to look for echoes to ascend.
     [*]Cycle Consistency: Prevents the random aspects of a cycle (such as its length) from being rerandomized when you die. If you get a short cycle, you will have to accept it.
     [*]Fixed Dynamic Difficulty: Does away with the game's (very subtle) dynamic difficulty mechanic, by locking the difficulty level to a configurable value.

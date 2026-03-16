@@ -1,5 +1,4 @@
-﻿using BepInEx;
-using RWCustom;
+﻿using RWCustom;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.CompilerServices;
@@ -19,6 +18,30 @@ namespace QoD
 
             On.LizardAI.TravelPreference += LizardAI_TravelPreference;
             On.Tracker.CreatureRepresentation.Update += CreatureRepresentation_Update;
+
+            On.FlyAI.RoomNotACycleHazard += FlyAI_RoomNotACycleHazard;
+            On.FlyAI.Update += FlyAI_Update;
+        }
+
+        private static void FlyAI_Update(On.FlyAI.orig_Update orig, FlyAI self)
+        {
+            if (PluginOptions.BetterBatflyRainBehavior.Value && self.room != null)
+            {
+                if (FlyAI.RoomNotACycleHazard(self.room))
+                {
+                    self.fleeFromRain = false;
+                }
+                else if (self.room.world != null && self.room.world.rainCycle != null)
+                {
+                    self.fleeFromRain = self.room.world.rainCycle.RainApproaching < 0.3f;
+                }
+            }
+
+            orig(self);
+        }
+        private static bool FlyAI_RoomNotACycleHazard(On.FlyAI.orig_RoomNotACycleHazard orig, Room room)
+        {
+            return orig(room) && (!PluginOptions.BetterBatflyRainBehavior.Value || room.roomSettings.GetEffectAmount(RoomSettings.RoomEffect.Type.ElectricDeath) < 0.25f);
         }
 
         static ConditionalWeakTable<Tracker.CreatureRepresentation, PhysicalObject[]> trackedSlugcatHeldItemsData = new();

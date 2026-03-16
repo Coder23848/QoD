@@ -40,6 +40,7 @@ namespace QoD
         public static Configurable<bool> LizardPatience = Instance.config.Bind("LizardPatience", false, new ConfigurableInfo("When enabled, lizards that rely on stealth are more patient."));
         public static Configurable<bool> DropwigPitAvoidance = Instance.config.Bind("DropwigPitAvoidance", false, new ConfigurableInfo("When enabled, dropwigs avoid setting up ambushes over bottomless pits."));
         public static Configurable<bool> LizardsUnderstandSlugcatCombat = Instance.config.Bind("LizardsUnderstandSlugcatCombat", false, new ConfigurableInfo("When enabled, lizards are capable of strategizing around your weapons."));
+        public static Configurable<bool> BetterBatflyRainBehavior = Instance.config.Bind("BetterBatflyRainBehavior", false, new ConfigurableInfo("When enabled, batflies are better at escaping the Rain."));
 
         // NoIteratorKarma
         public static Configurable<bool> NoIteratorKarma = Instance.config.Bind("NoIteratorKarma", false, new ConfigurableInfo("When enabled, iterators are incapable of raising your maximum karma level."));
@@ -126,20 +127,21 @@ namespace QoD
             CheckBoxOption(MiscTab, LizardPatience, 0, "Patient Lizards");
             CheckBoxOption(MiscTab, DropwigPitAvoidance, 1, "Dropwig Pit Avoidance");
             CheckBoxOption(MiscTab, LizardsUnderstandSlugcatCombat, 2, "Lizards Understand Slugcat Combat");
+            CheckBoxOption(MiscTab, BetterBatflyRainBehavior, 3, "Better Batfly Rain Behavior");
             // NoIteratorKarma
-            CheckBoxOption(MiscTab, NoIteratorKarma, 3, "No Karma From Iterators");
+            CheckBoxOption(MiscTab, NoIteratorKarma, 4, "No Karma From Iterators");
             // ConsistentCycles
-            CheckBoxOption(MiscTab, ConsistentCycles, 4, "Cycle Consistency");
+            CheckBoxOption(MiscTab, ConsistentCycles, 5, "Cycle Consistency");
             // Misc
-            MiscTab.AddItems(new OpCheckBox(UseFixedDynamicDifficulty, new(50, 550 - 5 * 30)) { description = UseFixedDynamicDifficulty.info.description }, new OpFloatSlider(FixedDynamicDifficulty, new(90, 550 - 5 * 30 - 5), 100) { description = FixedDynamicDifficulty.info.description, min = -1f, max = 1f }, new OpLabel(new Vector2(110 + 100, 550 - 5 * 30), new Vector2(), "Fixed Dynamic Difficulty", FLabelAlignment.Left));
-            CheckBoxOption(MiscTab, NoSurvivorLeniency, 6, "Remove Survivor/Monk Leniency Mechanics");
-            CheckBoxOption(MiscTab, AlwaysFloodPrecycles, 7, "Precycles Always Flood");
-            CheckBoxOption(MiscTab, AudibleFoodPopping, 8, "Audible Food Popping");
-            CheckBoxOption(MiscTab, AudibleSpearmaster, 9, "Audible Spearmaster Spears");
+            MiscTab.AddItems(new OpCheckBox(UseFixedDynamicDifficulty, new(50, 550 - 6 * 30)) { description = UseFixedDynamicDifficulty.info.description }, new OpFloatSlider(FixedDynamicDifficulty, new(90, 550 - 6 * 30 - 5), 100) { description = FixedDynamicDifficulty.info.description, min = -1f, max = 1f }, new OpLabel(new Vector2(110 + 100, 550 - 6 * 30), new Vector2(), "Fixed Dynamic Difficulty", FLabelAlignment.Left));
+            CheckBoxOption(MiscTab, NoSurvivorLeniency, 7, "Remove Survivor/Monk Leniency Mechanics");
+            CheckBoxOption(MiscTab, AlwaysFloodPrecycles, 8, "Precycles Always Flood");
+            CheckBoxOption(MiscTab, AudibleFoodPopping, 9, "Audible Food Popping");
+            CheckBoxOption(MiscTab, AudibleSpearmaster, 10, "Audible Spearmaster Spears");
 
             if (ModManager.Watcher)
             {
-                CheckBoxOption(MiscTab, StrongerBarnacles, 10, "Stronger Barnacles");
+                CheckBoxOption(MiscTab, StrongerBarnacles, 11, "Stronger Barnacles");
             }
 
             Tabs[0] = MiscTab;
