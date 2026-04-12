@@ -16,6 +16,7 @@ namespace QoD
         public static Configurable<bool> StrongerBarnacles = Instance.config.Bind("StrongerBarnacles", false, new ConfigurableInfo("Makes barnacles harder to deal with."));
         public static Configurable<bool> AudibleFoodPopping = Instance.config.Bind("AudibleGooieducks", false, new ConfigurableInfo("Allows other creatures to hear the sounds created when interacting with certain types of food."));
         public static Configurable<bool> AudibleSpearmaster = Instance.config.Bind("AudibleSpearmaster", false, new ConfigurableInfo("Allows other creatures to hear the Spearmaster's spear-picking sounds."));
+        public static Configurable<bool> FallDamageOnPoles = Instance.config.Bind("FallDamageOnPoles", false, new ConfigurableInfo("Makes it possible to take fall damage when grabbing a pole at a high speed."));
 
         // LessUI
         public static Configurable<bool> RemoveKillFeed = Instance.config.Bind("RemoveKillFeed", false, new ConfigurableInfo("Removes the kill feed from the shelter screen."));
@@ -138,10 +139,11 @@ namespace QoD
             CheckBoxOption(MiscTab, AlwaysFloodPrecycles, 8, "Precycles Always Flood");
             CheckBoxOption(MiscTab, AudibleFoodPopping, 9, "Audible Food Popping");
             CheckBoxOption(MiscTab, AudibleSpearmaster, 10, "Audible Spearmaster Spears");
+            CheckBoxOption(MiscTab, FallDamageOnPoles, 11, "Fall Damage On Poles");
 
             if (ModManager.Watcher)
             {
-                CheckBoxOption(MiscTab, StrongerBarnacles, 11, "Stronger Barnacles");
+                CheckBoxOption(MiscTab, StrongerBarnacles, 12, "Stronger Barnacles");
             }
 
             Tabs[0] = MiscTab;

@@ -22,6 +22,7 @@ Incorporates all of the functionality of the following 1.9 mods:
     [*]Precycles Always Flood: Flooding is always present during precycles.
     [*]Audible Food Popping: Allows other creatures to hear the sounds created when interacting with certain types of food.
     [*]Audible Spearmaster Spears: Allows other creatures to hear the Spearmaster's spear-picking sounds.
+    [*]Fall Damage On Poles: Allows you to take (slightly reduced) fall damage from landing on a pole at high velocities.
     [*]Stronger Barnacles: Makes Barnacles much harder to deal with.
     [*]Light Nerfs: Reduce the strength of the neuron glow and/or lanterns. Both can be configured to fade over time as well.
     [*]Remove Kill Feed: Remove the kill tracker added by the Remix mod on the hibernation screen. Does not affect the Hunter's campaign.
@@ -30,4 +31,4 @@ Incorporates all of the functionality of the following 1.9 mods:
     [*]Pipe Normalization: Changes the symbols on pipes to be less informative. Can be configured to remove the unique symbols for gates and/or shelters, make room-exit pipes use the same symbol as intra-room pipes, and even remove pipe symbols entirely.
 [/list]
 
-Now supports v1.11.4. Please report any bugs you find!
+Now supports v1.11.7. Please report any bugs you find!

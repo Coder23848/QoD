@@ -33,6 +33,70 @@ namespace QoD
             //IL.Spear.HitSomething += Spear_HitSomething;
             //IL.MoreSlugcats.LillyPuck.HitSomething += LillyPuck_HitSomething;
             //IL.Weapon.HitAnotherThrownWeapon += Weapon_HitAnotherThrownWeapon;
+
+            On.Player.MovementUpdate += Player_MovementUpdate;
+        }
+
+        private static bool IsInPoleRelatedAnimation(Player self)
+        {
+            // Some of these are more important than others; vines and antlers slow the player down gradually, for example, so it's probably very hard (if not impossible) to land on them hard enough to take fall damage.
+            return self.animation == Player.AnimationIndex.AntlerClimb ||
+                   self.animation == Player.AnimationIndex.BeamTip ||
+                   self.animation == Player.AnimationIndex.ClimbOnBeam ||
+                   self.animation == Player.AnimationIndex.GetUpOnBeam ||
+                   self.animation == Player.AnimationIndex.GetUpToBeamTip ||
+                   self.animation == Player.AnimationIndex.HangFromBeam ||
+                   self.animation == Player.AnimationIndex.HangUnderVerticalBeam ||
+                   self.animation == Player.AnimationIndex.StandOnBeam ||
+                   self.animation == Player.AnimationIndex.VineGrab;
+        }
+        private static void Player_MovementUpdate(On.Player.orig_MovementUpdate orig, Player self, bool eu)
+        {
+            float speedBefore = self.mainBodyChunk.vel.y;
+            bool couldHitBeam = false;
+            if (PluginOptions.FallDamageOnPoles.Value && !IsInPoleRelatedAnimation(self))
+            {
+                couldHitBeam = true;
+            }
+
+            orig(self, eu);
+
+            if (couldHitBeam && IsInPoleRelatedAnimation(self))
+            {
+                float speedAfter = self.mainBodyChunk.vel.y;
+                float upwardsAcceleration = speedAfter - speedBefore;
+                //UnityEngine.Debug.Log($"Player speed changed from {speedBefore} to {speedAfter}, for an acceleration of {upwardsAcceleration}");
+
+                // see Player.TerrainImpact for vanilla fall damage calculation
+
+                if (upwardsAcceleration > 12f)
+                {
+                    self.Blink(RWCustom.Custom.IntClamp((int)upwardsAcceleration, 12, 60) / 2);
+                }
+
+                // Balance-wise, the goal is for the antennae in the central room in Underhang to just barely still be able to break your fall, even if you jump from the top platforms in the room.
+                // With the current setup, this works perfectly, to the point where you actually do fall off and die if you instead jump from the poles connecting said platforms to the ceiling.
+
+                // The Gourmand takes less fall damage when hitting the ground, due to their ... rotundness. However, their weight works against them here >:)
+                float stunThreshold = self.isGourmand ? 30f : 35f;
+                if (upwardsAcceleration > stunThreshold && self.immuneToFallDamage <= 0 && (!ModManager.MSC || self.tongue == null || !self.tongue.Attached))
+                {
+                    float maxStunSpeed = self.isGourmand ? 40f : 60f;
+
+                    // Floor-collision fall damage always stuns for at least 40 ticks, but for poles I think it makes sense to allow very small stun amounts.
+                    // This also nerfs the stun a bit in general; since it goes all the way to 0, it's even sometimes possible to grab the pole again in subsequent ticks.
+                    int stunTime = (int)RWCustom.Custom.LerpMap(upwardsAcceleration, stunThreshold, maxStunSpeed, 0f, 140f, 2.5f);
+
+                    //UnityEngine.Debug.Log($"Player stunned for {stunTime} ticks.");
+
+                    self.Stun(stunTime);
+                    if (ModManager.MSC && self.SlugCatClass == MoreSlugcats.MoreSlugcatsEnums.SlugcatStatsName.Sofanthiel && self.sofCooldown < 0)
+                    {
+                        self.room.PlaySound(MoreSlugcats.MoreSlugcatsEnums.MSCSoundID.Inv_Hit, 0f, 1f, 0.8f + UnityEngine.Random.value * 1f);
+                        self.sofCooldown = 5;
+                    }
+                }
+            }
         }
 
         // adds InGameNoise to all spear BOUNCES
