@@ -123,27 +123,33 @@ namespace QoD
             Tabs = new OpTab[3];
 
             OpTab MiscTab = new(Instance, "General");
+
+            int miscPosIndex = 0;
             
             // SmarterCritters
-            CheckBoxOption(MiscTab, LizardPatience, 0, "Patient Lizards");
-            CheckBoxOption(MiscTab, DropwigPitAvoidance, 1, "Dropwig Pit Avoidance");
-            CheckBoxOption(MiscTab, LizardsUnderstandSlugcatCombat, 2, "Lizards Understand Slugcat Combat");
-            CheckBoxOption(MiscTab, BetterBatflyRainBehavior, 3, "Better Batfly Rain Behavior");
+            CheckBoxOption(MiscTab, LizardPatience, miscPosIndex++, "Patient Lizards");
+            CheckBoxOption(MiscTab, DropwigPitAvoidance, miscPosIndex++, "Dropwig Pit Avoidance");
+            CheckBoxOption(MiscTab, LizardsUnderstandSlugcatCombat, miscPosIndex++, "Lizards Understand Slugcat Combat");
+            CheckBoxOption(MiscTab, BetterBatflyRainBehavior, miscPosIndex++, "Better Batfly Rain Behavior");
             // NoIteratorKarma
-            CheckBoxOption(MiscTab, NoIteratorKarma, 4, "No Karma From Iterators");
+            CheckBoxOption(MiscTab, NoIteratorKarma, miscPosIndex++, "No Karma From Iterators");
             // ConsistentCycles
-            CheckBoxOption(MiscTab, ConsistentCycles, 5, "Cycle Consistency");
+            CheckBoxOption(MiscTab, ConsistentCycles, miscPosIndex++, "Cycle Consistency");
             // Misc
-            MiscTab.AddItems(new OpCheckBox(UseFixedDynamicDifficulty, new(50, 550 - 6 * 30)) { description = UseFixedDynamicDifficulty.info.description }, new OpFloatSlider(FixedDynamicDifficulty, new(90, 550 - 6 * 30 - 5), 100) { description = FixedDynamicDifficulty.info.description, min = -1f, max = 1f }, new OpLabel(new Vector2(110 + 100, 550 - 6 * 30), new Vector2(), "Fixed Dynamic Difficulty", FLabelAlignment.Left));
-            CheckBoxOption(MiscTab, NoSurvivorLeniency, 7, "Remove Survivor/Monk Leniency Mechanics");
-            CheckBoxOption(MiscTab, AlwaysFloodPrecycles, 8, "Precycles Always Flood");
-            CheckBoxOption(MiscTab, AudibleFoodPopping, 9, "Audible Food Popping");
-            CheckBoxOption(MiscTab, AudibleSpearmaster, 10, "Audible Spearmaster Spears");
-            CheckBoxOption(MiscTab, FallDamageOnPoles, 11, "Fall Damage On Poles");
-
+            MiscTab.AddItems(new OpCheckBox(UseFixedDynamicDifficulty, new(50, 550 - miscPosIndex * 30)) { description = UseFixedDynamicDifficulty.info.description }, new OpFloatSlider(FixedDynamicDifficulty, new(90, 550 - miscPosIndex * 30 - 5), 100) { description = FixedDynamicDifficulty.info.description, min = -1f, max = 1f }, new OpLabel(new Vector2(110 + 100, 550 - miscPosIndex * 30), new Vector2(), "Fixed Dynamic Difficulty", FLabelAlignment.Left));
+            miscPosIndex++;
+            
+            CheckBoxOption(MiscTab, NoSurvivorLeniency, miscPosIndex++, "Remove Survivor/Monk Leniency Mechanics");
+            CheckBoxOption(MiscTab, AlwaysFloodPrecycles, miscPosIndex++, "Precycles Always Flood");
+            CheckBoxOption(MiscTab, FallDamageOnPoles, miscPosIndex++, "Fall Damage On Poles");
+            CheckBoxOption(MiscTab, AudibleFoodPopping, miscPosIndex++, "Audible Food Popping");
+            if (ModManager.MSC)
+            {
+                CheckBoxOption(MiscTab, AudibleSpearmaster, miscPosIndex++, "Audible Spearmaster Spears");
+            }
             if (ModManager.Watcher)
             {
-                CheckBoxOption(MiscTab, StrongerBarnacles, 12, "Stronger Barnacles");
+                CheckBoxOption(MiscTab, StrongerBarnacles, miscPosIndex++, "Stronger Barnacles");
             }
 
             Tabs[0] = MiscTab;
